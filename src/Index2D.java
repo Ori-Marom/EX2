@@ -7,6 +7,7 @@
  * The index "c12" represents the cell [2][12].
  */
 public interface Index2D {
+
     /**
      *
      * @return the cell index representation in form of a spreadsheet (e.g., "B3").
