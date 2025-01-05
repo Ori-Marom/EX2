@@ -16,16 +16,40 @@ public class SCell implements Cell {
 
     @Override
     public void setData(String s) {
-        this.line = s;
-        if (isNumber(s)) {
-            setType(Ex2Utils.NUMBER);
-        } else if (isText(s)) {
-            setType(Ex2Utils.TEXT);
-        } else if (isForm(s)) {
-            setType(Ex2Utils.FORM);
-        } else {
-            setType(Ex2Utils.ERR_FORM_FORMAT);
+        if (s == null || s.trim().isEmpty()) {
+            this.line = Ex2Utils.EMPTY_CELL;
+            this.type = Ex2Utils.TEXT;
+            return;
         }
+
+        this.line = s.trim();
+        this.type = checkType(this.line);
+
+        switch (this.type){
+            case Ex2Utils.FORM:
+                try {
+                    double result = computeForm(this.line);
+                    this.line = String.format("%.1f", result);
+                } catch (IllegalArgumentException e) {
+                    this.type = Ex2Utils.ERR_FORM_FORMAT;
+                    this.line = Ex2Utils.ERR_FORM;
+                } break;
+            case Ex2Utils.NUMBER:
+                try {
+                    double number = Double.parseDouble(this.line);
+                    this.line = String.format("%.1f", number);
+                } catch (NumberFormatException e) {
+                    this.type = Ex2Utils.ERR;
+                    this.line = Ex2Utils.ERR_FORM;
+                } break;
+            case Ex2Utils.TEXT:
+                this.line = s;
+                this.type = Ex2Utils.TEXT; break;
+            default:
+                this.type = Ex2Utils.ERR;
+                this.line = Ex2Utils.ERR_FORM;
+        }
+
     }
 
     @Override
@@ -205,5 +229,11 @@ public class SCell implements Cell {
             default:
                 return Integer.MAX_VALUE;
         }
+    }
+    public int checkType(String s){
+        if(s == null  ||s.trim().isEmpty()||  isText(s)) return Ex2Utils.TEXT;
+        if(isNumber(s)) return Ex2Utils.NUMBER;
+        if(isForm(s)) return Ex2Utils.FORM;
+        return Ex2Utils.ERR_FORM_FORMAT;
     }
 }

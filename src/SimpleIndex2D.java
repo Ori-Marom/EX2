@@ -1,17 +1,22 @@
 
 
 public class SimpleIndex2D implements Index2D {
-    private int x;
+    private char x;
     private int y;
 
-    public SimpleIndex2D(int x, int y) {
+    public SimpleIndex2D(char x, int y) {
         this.x = x;
         this.y = y;
     }
 
     @Override
     public int getX() {
-        return x;
+        try {
+            char upperC = Character.toUpperCase(this.x);
+            return upperC - 'A';
+        } catch (Exception e) {
+            return Ex2Utils.ERR;
+        }
     }
 
     @Override

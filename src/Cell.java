@@ -40,4 +40,7 @@ public interface Cell {
      * @param t
      */
     public void setOrder(int t);
+
+    // Implementing the functions from CELL
+    double computeForm(String form);
 }

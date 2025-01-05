@@ -145,4 +145,5 @@ public class Ex2GUI {
 			StdDrawEx2.resetXY();
 		}
 	}
+
 }

@@ -21,7 +21,6 @@ public interface Index2D {
     public boolean isValid();
 
     /**
-     *
      * @return the x value (integer) of this index
      */
     public int getX();
