@@ -1,5 +1,6 @@
-
-
+//import assignments.ex2.Ex2Utils;
+//import assignments.ex2.Index2D;
+//import assignments.ex2.Sheet;
 import java.awt.*;
 import java.io.IOException;
 
@@ -145,5 +146,4 @@ public class Ex2GUI {
 			StdDrawEx2.resetXY();
 		}
 	}
-
 }

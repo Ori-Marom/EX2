@@ -1,4 +1,4 @@
-
+//package assignments.ex2;
 
 /**
  * ArielU. Intro2CS, Ex2: https://docs.google.com/document/d/1-18T-dj00apE4k1qmpXGOaqttxLn-Kwi/edit?usp=sharing&ouid=113711744349547563645&rtpof=true&sd=true
@@ -7,7 +7,6 @@
  * The index "c12" represents the cell [2][12].
  */
 public interface Index2D {
-
     /**
      *
      * @return the cell index representation in form of a spreadsheet (e.g., "B3").
@@ -21,6 +20,7 @@ public interface Index2D {
     public boolean isValid();
 
     /**
+     *
      * @return the x value (integer) of this index
      */
     public int getX();

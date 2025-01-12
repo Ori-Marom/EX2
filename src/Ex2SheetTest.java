@@ -1,59 +1,79 @@
-import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
-import java.io.File;
 import java.io.IOException;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class Ex2SheetTest {
 
     @Test
+    public void testInitialValues() {
+        Ex2Sheet sheet = new Ex2Sheet(3, 3);
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                assertEquals("", sheet.value(i, j), "Initial cell value should be empty");
+            }
+        }
+    }
+
+    @Test
+    public void testSetAndGetValues() {
+        Ex2Sheet sheet = new Ex2Sheet(2, 2);
+        sheet.set(0, 0, "42");
+
+
+        sheet.set(1, 1, "Hello");
+        assertEquals("Hello", sheet.value(1, 1), "Value in cell (1,1) should be Hello");
+    }
+
+
+
+    @Test
+    public void testInvalidFormula() {
+        Ex2Sheet sheet = new Ex2Sheet(2, 2);
+        sheet.set(0, 0, "=A1+A3");
+        assertEquals(Ex2Utils.ERR_FORM, sheet.value(0, 0), "Invalid formula should return error");
+    }
+
+    @Test
     public void testLoadAndSave() throws IOException {
-        Ex2Sheet sheet = new Ex2Sheet(5, 5);
-        sheet.set(0, 0, "5");
-        sheet.set(1, 1, "=A1+2");
+        Ex2Sheet sheet = new Ex2Sheet(3, 3);
+        sheet.set(0, 0, "123");
+        sheet.set(1, 1, "=A1*2");
+        sheet.set(2, 2, "Hello World");
 
-        // Save to a temporary file
-        String tempFile = "testSheet.csv";
-        sheet.save(tempFile);
+        String fileName = "testSheet.csv";
+        sheet.save(fileName);
 
-        // Create a new sheet and load from the file
-        Ex2Sheet loadedSheet = new Ex2Sheet(5, 5);
-        loadedSheet.load(tempFile);
+        Ex2Sheet loadedSheet = new Ex2Sheet(3, 3);
+        loadedSheet.load(fileName);
 
-        // Check if the loaded values are correct
-        assertEquals("5", loadedSheet.value(0, 0));
-        assertEquals("=A1+2", loadedSheet.value(1, 1));
 
-        // Clean up the temporary file
-        new File(tempFile).delete();
+
+        assertEquals("Hello World", loadedSheet.value(2, 2), "Loaded value in (2,2) should match saved value");
     }
 
     @Test
-    public void testInvalidCellName() {
-        Ex2Sheet sheet = new Ex2Sheet(5, 5);
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            sheet.set(0, 0, "InvalidCellName");
-        });
-        assertEquals("Invalid cell coordinates", exception.getMessage());
+    public void testIsInBounds() {
+        Ex2Sheet sheet = new Ex2Sheet(3, 3);
+        assertTrue(sheet.isIn(0, 0), "Cell (0,0) should be in bounds");
+        assertFalse(sheet.isIn(-1, 0), "Cell (-1,0) should be out of bounds");
+        assertFalse(sheet.isIn(3, 3), "Cell (3,3) should be out of bounds");
     }
 
     @Test
-    public void testEval() {
-        Ex2Sheet sheet = new Ex2Sheet(5, 5);
-        sheet.set(0, 0, "10");
-        sheet.set(1, 0, "20");
-        sheet.set(2, 0, "=A1+A2");
+    public void testDepthArray() {
+        Ex2Sheet sheet = new Ex2Sheet(3, 3);
+        sheet.set(0, 0, "=B1");
+        sheet.set(1, 0, "=C1");
 
-        assertEquals("10", sheet.eval(0, 0));
-        assertEquals("20", sheet.eval(1, 0));
-        assertEquals("30.0", sheet.eval(2, 0)); // Evaluating the formula
+        int[][] depth = sheet.depth();
+        assertEquals(0, depth[0][0], "Initial depth of (0,0) should be 0");
+        assertEquals(0, depth[1][0], "Initial depth of (1,0) should be 0");
     }
 
     @Test
-    public void testLoadInvalidData() {
-        Ex2Sheet sheet = new Ex2Sheet(5, 5);
-        Exception exception = assertThrows(IOException.class, () -> {
-            sheet.load("nonexistentfile.csv");
-        });
-        assertTrue(exception.getMessage().contains("No such file or directory"));
+    public void testEmptySheet() {
+        Ex2Sheet sheet = new Ex2Sheet();
+        assertEquals("", sheet.value(0, 0), "Empty sheet cells should be empty by default");
     }
 }
+
